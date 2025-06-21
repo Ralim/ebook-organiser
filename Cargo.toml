@@ -1,0 +1,9 @@
+[package]
+name = "ebook-organiser"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+epub = "2.1.4"
+formatx = "0.2.4"
+log = "0.4.27"
