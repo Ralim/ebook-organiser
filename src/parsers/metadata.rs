@@ -1,4 +1,4 @@
-use std::{io::Write, path::Path};
+use std::path::Path;
 
 use crate::{parsers::epub::parse_epub, prompt::prompt};
 
@@ -20,13 +20,10 @@ pub fn parse_file(file_path: &Path) -> Option<FileMetadata> {
     } else {
         None
     };
-    match metadata {
-        Some(meta) => {
-            if !meta.title.is_empty() && !meta.main_author.is_empty() {
-                return Some(meta);
-            }
+    if let Some(meta) = metadata {
+        if !meta.title.is_empty() && !meta.main_author.is_empty() {
+            return Some(meta);
         }
-        None => {}
     }
     println!("Failed to parse file metadata for: {:?} ", file_path,);
     let title = prompt("Enter title");
@@ -35,5 +32,5 @@ pub fn parse_file(file_path: &Path) -> Option<FileMetadata> {
         println!("Title or main author cannot be empty.");
         return None;
     }
-    return Some(FileMetadata { title, main_author });
+    Some(FileMetadata { title, main_author })
 }

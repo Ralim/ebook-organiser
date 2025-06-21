@@ -16,18 +16,14 @@ impl<'a> Sorter<'a> {
     pub fn sort_recursively(&self, folder: &Path, library_root_folder: &Path) {
         if folder.is_dir() {
             if let Ok(dir_entries) = read_dir(folder) {
-                for entry_res in dir_entries {
-                    if let Ok(entry) = entry_res {
-                        self.sort_recursively(&entry.path(), library_root_folder);
-                    }
+                for entry in dir_entries.flatten() {
+                    self.sort_recursively(&entry.path(), library_root_folder);
                 }
             }
-        } else {
-            if let Some(ext) = folder.extension() {
-                if ext == "epub" || ext == "pdf" || ext == "mobi" {
-                    // We only want to sort epub, pdf and mobi files
-                    self.sort(&folder, library_root_folder);
-                }
+        } else if let Some(ext) = folder.extension() {
+            if ext == "epub" || ext == "pdf" || ext == "mobi" {
+                // We only want to sort epub, pdf and mobi files
+                self.sort(folder, library_root_folder);
             }
         }
     }

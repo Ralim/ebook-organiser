@@ -22,3 +22,41 @@ pub fn prompt_bool(prompt_text: &str) -> bool {
         }
     }
 }
+
+pub fn prompt_select_other(prompt_text: &str, options: &[String]) -> String {
+    let mut full_prompt = prompt_text.to_owned() + "\r\n";
+    for (i, option) in options.iter().enumerate() {
+        full_prompt += &format!("[{i}]: {}\r\n", option);
+    }
+    loop {
+        let response = prompt(&full_prompt);
+        // if response is a number check if we can parse it as an index
+        if response == "other" {
+            return prompt("Please specify your option");
+        } else if let Ok(index) = response.parse::<usize>() {
+            if index < options.len() {
+                return options[index].to_string();
+            } else {
+                println!("Index out of range. Please select a valid index.");
+            }
+        } else if response.contains(',') {
+            // Multiple selection,
+            // Split by comma, pick each option from the options list by this index, then join them with '&'
+            let indices: Vec<usize> = response
+                .split(',')
+                .map(str::trim)
+                .filter_map(|s| s.parse::<usize>().ok())
+                .collect();
+            if indices.iter().all(|&i| i < options.len()) {
+                return indices
+                    .iter()
+                    .map(|&i| options[i].to_string())
+                    .collect::<Vec<String>>()
+                    .join(" & ");
+            } else {
+                println!("One or more indices are out of range. Please select valid indices.");
+            }
+        }
+        println!("Input cannot be empty. Please select an option.");
+    }
+}
