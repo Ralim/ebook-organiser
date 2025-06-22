@@ -16,4 +16,4 @@ Currently it supports the following formats:
 - Then run `ebook-organiser organise <optional source path>` to organise your ebooks.
 
 * All movements of files require confirmation, so you can review the changes before they are made.
-* If its unsure on authors it will ask.
+* If it's unsure on authors it will ask.
