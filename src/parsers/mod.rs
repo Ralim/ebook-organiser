@@ -1,3 +1,4 @@
+mod audiobook;
 pub mod epub;
 pub mod metadata;
 mod misc;

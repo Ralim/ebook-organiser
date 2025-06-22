@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use crate::{
-    parsers::{epub::parse_epub, mobi::parse_mobi},
+    parsers::{audiobook::parse_audiobook, epub::parse_epub, mobi::parse_mobi},
     prompt::prompt,
 };
 
@@ -22,6 +22,8 @@ pub fn parse_file(file_path: &Path) -> Option<FileMetadata> {
         parse_epub(file_path).ok()
     } else if ext == "mobi" {
         parse_mobi(file_path).ok()
+    } else if ext == "m4a" || ext == "m4b" {
+        parse_audiobook(file_path).ok()
     } else {
         None
     };
