@@ -41,6 +41,14 @@ enum Commands {
         /// defaults to "./input"
         #[arg(value_name = "SOURCE_PATH")]
         source_path: Option<PathBuf>,
+
+        /// Copy files instead of moving them (overrides config)
+        #[arg(long, conflicts_with = "move")]
+        copy: bool,
+
+        /// Move files instead of copying them (overrides config)
+        #[arg(long, conflicts_with = "copy")]
+        r#move: bool,
     },
 
     /// Save the default configuration file
@@ -57,11 +65,11 @@ fn get_default_config_path() -> PathBuf {
 }
 
 /// Run the sort operation with the specified config and source path
-fn run_sort(config_path: Option<PathBuf>, source_path: Option<PathBuf>) {
+fn run_sort(config_path: Option<PathBuf>, source_path: Option<PathBuf>, copy_flag: Option<bool>) {
     // Load configuration from specified path or default path
     let config_path = config_path.unwrap_or_else(get_default_config_path);
 
-    let config = match config::Config::load(&config_path) {
+    let mut config = match config::Config::load(&config_path) {
         Ok(config) => {
             println!("Configuration loaded from {}", config_path.display());
             config
@@ -77,6 +85,17 @@ fn run_sort(config_path: Option<PathBuf>, source_path: Option<PathBuf>) {
         }
     };
 
+    // Override config copy value if a command line flag was provided
+    if let Some(copy_value) = copy_flag {
+        if config.input_path == config.library_path && copy_value {
+            eprintln!(
+                "Error: Copying files is not recommended when the input path is the same as the library path."
+            );
+            return;
+        }
+        config.copy = copy_value;
+    }
+
     // Use provided source path or fall back to config
     let source_path = match source_path {
         Some(path) => path,
@@ -85,7 +104,7 @@ fn run_sort(config_path: Option<PathBuf>, source_path: Option<PathBuf>) {
 
     let library_path = Path::new(&config.library_path);
     let audio_book_library_path = Path::new(&config.audiobook_library_path);
-    let sorter = sorter::Sorter::new(&config.format_template);
+    let sorter = sorter::Sorter::new(&config.format_template, config.copy);
 
     println!(
         "Starting organisation process: sorting ebooks from {} into {}",
@@ -93,6 +112,10 @@ fn run_sort(config_path: Option<PathBuf>, source_path: Option<PathBuf>) {
         library_path.display()
     );
     println!("Using format template: {}", &config.format_template);
+    println!(
+        "Copy mode: {}",
+        if config.copy { "enabled" } else { "disabled" }
+    );
 
     sorter.sort_recursively(&source_path, library_path, audio_book_library_path);
 
@@ -116,12 +139,25 @@ fn main() {
             println!("Success: Default config saved to {}", config_path.display());
             println!("You can now edit this file to customize your ebook organisation.");
         }
-        Some(Commands::Sort { source_path }) => {
-            run_sort(cli.config.clone(), source_path.clone());
+        Some(Commands::Sort {
+            source_path,
+            copy,
+            r#move,
+        }) => {
+            // Determine whether to override the copy flag from config
+            let copy_flag = if *copy {
+                Some(true)
+            } else if *r#move {
+                Some(false)
+            } else {
+                None
+            };
+
+            run_sort(cli.config.clone(), source_path.clone(), copy_flag);
         }
         None => {
             // If no command is specified, default to Sort with no source path
-            run_sort(cli.config, None);
+            run_sort(cli.config, None, None);
         }
     }
 }

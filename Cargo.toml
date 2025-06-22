@@ -9,7 +9,7 @@ epub = "2.1.4"
 formatx = "0.2.4"
 serde = { version = "1.0.219", features = ["derive"] }
 toml = "0.8.10"
-dirs = "5.0.1"
+dirs = "6"
 mobi = "0.8.0"
 mp4ameta = "0.13.0"
 
