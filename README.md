@@ -14,6 +14,8 @@ Currently it supports the following formats:
 - - Note: At runtime you can temporarily override the config by passing the `--config` argument.
 - - Note: Also, you can override the source folder; so I suggest using a different folder for both (maybe Downloads/Exports for source?)
 - Then run `ebook-organiser organise <optional source path>` to organise your ebooks.
+- All movements of files require confirmation, so you can review the changes before they are made.
+- If it's unsure on authors it will ask.
 
-* All movements of files require confirmation, so you can review the changes before they are made.
-* If it's unsure on authors it will ask.
+## Licence
+This is Licenced under the MIT licence, see [LICENSE](LICENSE) for more details.
