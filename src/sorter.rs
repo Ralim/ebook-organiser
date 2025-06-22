@@ -21,7 +21,7 @@ impl<'a> Sorter<'a> {
                 }
             }
         } else if let Some(ext) = folder.extension() {
-            if ext == "epub" || ext == "pdf" || ext == "mobi" {
+            if ext == "epub" || ext == "mobi" {
                 // We only want to sort epub, pdf and mobi files
                 self.sort(folder, library_root_folder);
             }

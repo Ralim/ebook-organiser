@@ -1,6 +1,9 @@
 use std::path::Path;
 
-use crate::{parsers::epub::parse_epub, prompt::prompt};
+use crate::{
+    parsers::{epub::parse_epub, mobi::parse_mobi},
+    prompt::prompt,
+};
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct FileMetadata {
@@ -17,6 +20,8 @@ pub fn parse_file(file_path: &Path) -> Option<FileMetadata> {
 
     let metadata: Option<FileMetadata> = if ext == "epub" {
         parse_epub(file_path).ok()
+    } else if ext == "mobi" {
+        parse_mobi(file_path).ok()
     } else {
         None
     };
