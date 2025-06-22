@@ -6,7 +6,7 @@ use std::path::Path;
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Config {
     pub library_path: String,
-    pub audio_book_library_path: String,
+    pub audiobook_library_path: String,
     pub input_path: String,
     pub format_template: String,
 }
@@ -16,7 +16,7 @@ impl Default for Config {
             library_path: String::from("/tmp/library"),
             input_path: String::from("/tmp/input"),
             format_template: String::from("{author}/{title}.{ext}"),
-            audio_book_library_path: String::from("/tmp/audiobook_library"),
+            audiobook_library_path: String::from("/tmp/audiobook_library"),
         }
     }
 }
@@ -68,7 +68,7 @@ mod tests {
         // Create a TOML config file
         let toml_content = r#"
         library_path = "/tmp/library"
-        audio_book_library_path = "/tmp/audiobook_library"
+        audiobook_library_path = "/tmp/audiobook_library"
         input_path = "/tmp/input"
         format_template = "{author}/{title}.{ext}"
         "#;
@@ -117,7 +117,7 @@ mod tests {
         assert_eq!(default_config.input_path, "/tmp/input");
         assert_eq!(default_config.format_template, "{author}/{title}.{ext}");
         assert_eq!(
-            default_config.audio_book_library_path,
+            default_config.audiobook_library_path,
             "/tmp/audiobook_library"
         );
     }

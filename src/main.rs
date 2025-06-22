@@ -84,6 +84,7 @@ fn run_sort(config_path: Option<PathBuf>, source_path: Option<PathBuf>) {
     };
 
     let library_path = Path::new(&config.library_path);
+    let audio_book_library_path = Path::new(&config.audiobook_library_path);
     let sorter = sorter::Sorter::new(&config.format_template);
 
     println!(
@@ -93,7 +94,7 @@ fn run_sort(config_path: Option<PathBuf>, source_path: Option<PathBuf>) {
     );
     println!("Using format template: {}", &config.format_template);
 
-    sorter.sort_recursively(&source_path, library_path);
+    sorter.sort_recursively(&source_path, library_path, audio_book_library_path);
 
     println!("Organisation complete!");
 }
