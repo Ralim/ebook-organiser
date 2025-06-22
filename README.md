@@ -6,6 +6,7 @@ This only exists as all other tools I found were either too complex, or missing 
 Currently it supports the following formats:
 - epub
 - mobi
+- m4b (Audiobooks)
 
 ## How to use
 
