@@ -24,7 +24,8 @@ pub fn prompt_bool(prompt_text: &str) -> bool {
 }
 
 pub fn prompt_select_other(prompt_text: &str, options: &[String]) -> String {
-    let mut full_prompt = prompt_text.to_owned() + "\r\n";
+    let mut full_prompt = prompt_text.to_owned()
+        + "please select one or more of the following (comma seperated) or type 'other':\r\n";
     for (i, option) in options.iter().enumerate() {
         full_prompt += &format!("[{i}]: {}\r\n", option);
     }

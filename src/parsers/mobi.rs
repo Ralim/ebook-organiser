@@ -2,10 +2,7 @@ use std::path::Path;
 
 use mobi::Mobi;
 
-use crate::{
-    parsers::metadata::FileMetadata,
-    prompt::prompt,
-};
+use crate::{parsers::metadata::FileMetadata, prompt::prompt};
 
 pub fn parse_mobi(file_path: &Path) -> Result<FileMetadata, String> {
     // Open the MOBI file and parse its metadata

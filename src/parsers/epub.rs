@@ -66,9 +66,7 @@ pub fn parse_epub(file_path: &Path) -> Result<FileMetadata, String> {
                 let mut final_options: Vec<String> = final_options_set.into_iter().collect();
                 final_options.sort();
                 prompt_select_other(
-                    &format!(
-                        "No main author found for {file_path:?}, please select one of the following or type 'other':"
-                    ),
+                    &format!("No main author found for {file_path:?}"),
                     &final_options,
                 )
             };
