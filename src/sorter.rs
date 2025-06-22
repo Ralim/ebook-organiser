@@ -69,7 +69,30 @@ impl<'a> Sorter<'a> {
         // Decide whether to copy or move the file based on the copy flag
         if self.copy {
             // Copy mode - copy file and leave original intact
-            if std::fs::copy(file_path, &new_file_path).is_ok() {
+            // Check if the target file already exists, and is the same as the source if so, skip
+            // This is to prevent unnecessary copying
+            // Check if the destination file already exists
+            if new_file_path.exists() {
+                match (
+                    std::fs::metadata(file_path),
+                    std::fs::metadata(new_file_path),
+                ) {
+                    (Ok(source_meta), Ok(dest_meta)) => {
+                        // Compare file sizes to see if they're likely the same file
+                        if source_meta.len() == dest_meta.len() {
+                            println!(
+                                "Destination file {} already exists and has same size, skipping copy.",
+                                new_file_path.display()
+                            );
+                            return;
+                        }
+                    }
+                    _ => {
+                        // Can't get metadata for some reason, continue with the copy
+                    }
+                }
+            }
+            if std::fs::copy(file_path, new_file_path).is_ok() {
                 println!(
                     "Copied {} to {}",
                     file_path.display(),
@@ -80,9 +103,9 @@ impl<'a> Sorter<'a> {
             }
         } else {
             // Move/rename mode (default behavior)
-            if let Err(e) = std::fs::rename(file_path, &new_file_path) {
+            if let Err(e) = std::fs::rename(file_path, new_file_path) {
                 // If rename fails, try copy + delete as fallback
-                if std::fs::copy(file_path, &new_file_path).is_ok() {
+                if std::fs::copy(file_path, new_file_path).is_ok() {
                     if let Err(e) = std::fs::remove_file(file_path) {
                         eprintln!("Failed to remove original file: {}", e);
                     }
