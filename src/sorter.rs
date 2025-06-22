@@ -66,7 +66,13 @@ impl<'a> Sorter<'a> {
                         }
                         // If the new file path is different from the original, we move the file
                         if let Err(e) = std::fs::rename(file_path, &new_file_path) {
-                            eprintln!("Failed to rename file: {}", e);
+                            if std::fs::copy(file_path, new_file_path).is_ok() {
+                                if let Err(e) = std::fs::remove_file(file_path) {
+                                    eprintln!("Failed to remove original file: {}", e);
+                                }
+                            } else {
+                                eprintln!("Failed to copy file: {}", e);
+                            }
                         } else {
                             println!(
                                 "Moved {} to {}",

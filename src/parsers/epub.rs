@@ -17,7 +17,7 @@ pub fn parse_epub(file_path: &Path) -> Result<FileMetadata, String> {
             let title = doc
                 .metadata
                 .get("title")
-                .and_then(|x| x.iter().filter(|s| s.to_lowercase() != "unknown").next())
+                .and_then(|x| x.iter().find(|s| s.to_lowercase() != "unknown"))
                 .cloned()
                 .unwrap_or_else(|| "".to_string());
 
@@ -42,10 +42,7 @@ pub fn parse_epub(file_path: &Path) -> Result<FileMetadata, String> {
                 // Sometimes we get a bunch of names as CSV, or we get a single name with a comma and flipped order.
                 // For these cases we can prompt the user to pick
 
-                let options = creators
-                    .into_iter()
-                    .chain(file_as.into_iter())
-                    .collect::<Vec<String>>();
+                let options = creators.into_iter().chain(file_as).collect::<Vec<String>>();
 
                 let options_split1: Vec<String> = options
                     .iter()
@@ -62,8 +59,8 @@ pub fn parse_epub(file_path: &Path) -> Result<FileMetadata, String> {
                 // Merge all threee options
                 let final_options_set: HashSet<String> = options
                     .into_iter()
-                    .chain(options_split2.into_iter())
-                    .chain(options_split1.into_iter())
+                    .chain(options_split2)
+                    .chain(options_split1)
                     .map(|x| x.trim().replace("  ", " "))
                     .collect::<HashSet<_>>();
                 let mut final_options: Vec<String> = final_options_set.into_iter().collect();
