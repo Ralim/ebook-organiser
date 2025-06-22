@@ -18,5 +18,8 @@ Currently it supports the following formats:
 - All movements of files require confirmation, so you can review the changes before they are made.
 - If it's unsure on authors it will ask.
 
+### Copy mode
+If copy mode is enabled (config, cli arg) AND the source folder is different from the destination folder, it will copy files instead of moving them.
+
 ## Licence
 This is Licenced under the MIT licence, see [LICENSE](LICENSE) for more details.

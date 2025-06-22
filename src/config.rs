@@ -9,6 +9,7 @@ pub struct Config {
     pub audiobook_library_path: String,
     pub input_path: String,
     pub format_template: String,
+    pub copy: bool,
 }
 impl Default for Config {
     fn default() -> Self {
@@ -17,6 +18,7 @@ impl Default for Config {
             input_path: String::from("/tmp/input"),
             format_template: String::from("{author}/{title}.{ext}"),
             audiobook_library_path: String::from("/tmp/audiobook_library"),
+            copy: false,
         }
     }
 }
@@ -71,6 +73,7 @@ mod tests {
         audiobook_library_path = "/tmp/audiobook_library"
         input_path = "/tmp/input"
         format_template = "{author}/{title}.{ext}"
+        copy = false
         "#;
 
         let mut file = fs::File::create(&temp_path)?;
