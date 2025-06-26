@@ -77,7 +77,7 @@ pub fn parse_epub(file_path: &Path) -> Result<FileMetadata, String> {
             })
         }
         Err(e) => {
-            println!("Failed to parse EPUB file: {:?}", e);
+            println!("Failed to parse EPUB file: {e:?}");
             Err(e.to_string())
         }
     }

@@ -81,7 +81,7 @@ pub fn parse_audiobook(file_path: &Path) -> Result<FileMetadata, String> {
             })
         }
         Err(e) => {
-            println!("Failed to parse audiobook file: {:?}", e);
+            println!("Failed to parse audiobook file: {e:?}");
             Err(e.to_string())
         }
     }

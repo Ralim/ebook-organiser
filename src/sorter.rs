@@ -42,16 +42,41 @@ impl<'a> Sorter<'a> {
             }
         }
     }
+    fn check_target_file_is_same(&self, file_path: &Path, new_file_path: &Path) -> bool {
+        if new_file_path.exists() {
+            match (
+                std::fs::metadata(file_path),
+                std::fs::metadata(new_file_path),
+            ) {
+                (Ok(source_meta), Ok(dest_meta)) => {
+                    // Compare file sizes to see if they're likely the same file
+                    if source_meta.len() == dest_meta.len() {
+                        return true;
+                    }
+                }
+                _ => {
+                    // Can't get metadata for some reason, continue with the copy
+                }
+            }
+        }
+        false
+    }
     fn act_on_file(&self, file_path: &Path, new_file_path: &Path) {
         if new_file_path == file_path {
             println!("File {} already has the correct name.", file_path.display());
             return;
         }
+        if self.copy && self.check_target_file_is_same(file_path, new_file_path) {
+            // If we're copying and the target file is the same, skip
+            println!(
+                "Skipping copy of {} to {}, they are the same file.",
+                file_path.display(),
+                new_file_path.display()
+            );
+            return;
+        }
         let action = if self.copy { "copy" } else { "move" };
-        println!(
-            "Want to {action} file from {:?} to {:?}",
-            file_path, new_file_path
-        );
+        println!("Want to {action} file from {file_path:?} to {new_file_path:?}");
         // Ask user to move
         if !prompt_bool("OK?") {
             return;
@@ -72,26 +97,7 @@ impl<'a> Sorter<'a> {
             // Check if the target file already exists, and is the same as the source if so, skip
             // This is to prevent unnecessary copying
             // Check if the destination file already exists
-            if new_file_path.exists() {
-                match (
-                    std::fs::metadata(file_path),
-                    std::fs::metadata(new_file_path),
-                ) {
-                    (Ok(source_meta), Ok(dest_meta)) => {
-                        // Compare file sizes to see if they're likely the same file
-                        if source_meta.len() == dest_meta.len() {
-                            println!(
-                                "Destination file {} already exists and has same size, skipping copy.",
-                                new_file_path.display()
-                            );
-                            return;
-                        }
-                    }
-                    _ => {
-                        // Can't get metadata for some reason, continue with the copy
-                    }
-                }
-            }
+
             if std::fs::copy(file_path, new_file_path).is_ok() {
                 println!(
                     "Copied {} to {}",
@@ -107,7 +113,7 @@ impl<'a> Sorter<'a> {
                 // If rename fails, try copy + delete as fallback
                 if std::fs::copy(file_path, new_file_path).is_ok() {
                     if let Err(e) = std::fs::remove_file(file_path) {
-                        eprintln!("Failed to remove original file: {}", e);
+                        eprintln!("Failed to remove original file: {e}");
                     }
                     println!(
                         "Moved (via copy) {} to {}",
@@ -115,7 +121,7 @@ impl<'a> Sorter<'a> {
                         new_file_path.display()
                     );
                 } else {
-                    eprintln!("Failed to copy file: {}", e);
+                    eprintln!("Failed to copy file: {e}");
                 }
             } else {
                 println!(

@@ -132,7 +132,7 @@ fn main() {
             let config_path = get_default_config_path();
 
             if let Err(e) = config.save(&config_path) {
-                eprintln!("Error: Failed to save configuration: {}", e);
+                eprintln!("Error: Failed to save configuration: {e}");
                 process::exit(1);
             }
 

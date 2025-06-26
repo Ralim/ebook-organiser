@@ -4,7 +4,7 @@ pub fn prompt(prompt: &str) -> String {
     let mut buffer = String::new();
     let stdin = std::io::stdin();
     while buffer.is_empty() {
-        print!("{}> ", prompt);
+        print!("{prompt}> ");
         std::io::stdout().flush().expect("Failed to flush stdout");
         stdin.read_line(&mut buffer).expect("Failed to read line");
         buffer = buffer.trim().to_string();
@@ -27,7 +27,7 @@ pub fn prompt_select_other(prompt_text: &str, options: &[String]) -> String {
     let mut full_prompt = prompt_text.to_owned()
         + "please select one or more of the following (comma seperated) or type 'other':\r\n";
     for (i, option) in options.iter().enumerate() {
-        full_prompt += &format!("[{i}]: {}\r\n", option);
+        full_prompt += &format!("[{i}]: {option}\r\n");
     }
     loop {
         let response = prompt(&full_prompt);

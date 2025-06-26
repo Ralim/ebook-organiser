@@ -29,7 +29,7 @@ pub fn parse_mobi(file_path: &Path) -> Result<FileMetadata, String> {
             })
         }
         Err(e) => {
-            println!("Failed to parse mobi file: {:?}", e);
+            println!("Failed to parse mobi file: {e:?}");
             Err(e.to_string())
         }
     }

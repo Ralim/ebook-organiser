@@ -32,7 +32,7 @@ pub fn parse_file(file_path: &Path) -> Option<FileMetadata> {
             return Some(meta);
         }
     }
-    println!("Failed to parse file metadata for: {:?} ", file_path,);
+    println!("Failed to parse file metadata for: {file_path:?} ",);
     let title = prompt("Enter title");
     let main_author = prompt("Enter main author");
     if title.is_empty() || main_author.is_empty() {
